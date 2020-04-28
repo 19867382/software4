@@ -1,0 +1,59 @@
+package com.elevator.elevator;
+
+import com.elevator.elevator.dao.CalculationDao;
+import com.elevator.elevator.dao.SortDao;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+import org.junit.jupiter.api.Test;
+import org.springframework.boot.test.context.SpringBootTest;
+
+import java.util.HashMap;
+import java.util.Map;
+
+@SpringBootTest
+class ElevatorApplicationTests {
+
+    @Test
+    void contextLoads() {
+        //总数据和电梯数据定义
+        JSONArray personData = new JSONArray();
+        JSONArray elevator1 = new JSONArray();
+        JSONArray elevator2 = new JSONArray();
+        JSONArray elevator3 = new JSONArray();
+        JSONArray elevator4 = new JSONArray();
+        //存储最大最小层对象
+        JSONObject returnObj = new JSONObject();
+        //总返回数据
+        JSONArray returnData = new JSONArray();
+        //排序类
+        SortDao sortDao = new SortDao();
+        //计算类
+        CalculationDao calculationDao = new CalculationDao();
+        //获取计算类的返回数据
+        Map<String, JSONArray> map = new HashMap<String, JSONArray>();
+        //获取层数计算返回数据
+        Map<String, Integer> getFloor = new HashMap<>();
+        //将乘客数据传值给personData
+        personData = getData();
+        //personData顺序排序
+        personData = sortDao.sortArray(personData);
+        //获取单层电梯计算结果
+        map = calculationDao.upSingleAndDouble(personData, 10, 800, 1);
+        elevator1 = map.get("elevator");
+        personData = map.get("personData");
+        returnData.put(elevator1);
+        getFloor = getMaxMinFloor(elevator1, 1);
+        try {
+            returnObj.put("upMaxFloor1", getFloor.get("maxFloor"));
+            returnObj.put("upMinFloor1", getFloor.get("minFloor"));
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        //personData逆序排序
+        personData = sortDao.sortArraydesc(personData);
+        map = calculationDao.downSingleAndDouble(personData, 10, 800, 1);
+        elevator1 = map.get("elevator");
+        personData = map.get("personData");
+        returnData.put(elevator1);
+        getF
